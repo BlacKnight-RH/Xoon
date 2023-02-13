@@ -24,6 +24,7 @@ internal enum TokenType
     CLASS,
     PRINT,
 
+    SLASH, //  /
     COMMA, DOT, SEMICOLON, // , . ;
     MINUS, PLUS, STAR, // - + * 
 
