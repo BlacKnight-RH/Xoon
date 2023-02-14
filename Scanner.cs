@@ -68,14 +68,35 @@ internal class Scanner
 
             case '\n': IncrementLine(); break;
             case '"': ReadString(); break;
-            default: Program.Error(_line, currentChar ,"Unexpected character."); break;
+            default:
+                if (Char.IsDigit(currentChar))
+                    ReadNumber();
+                else    
+                    Program.Error(_line, currentChar ,"Unexpected character.");
+                break;
         };
 
     }
 
+    private void ReadNumber()
+    {
+        int dotCount = 0;
+        int startOfNumber = _current;
+
+        while(dotCount <= 1 && Char.IsDigit(CurrentChar())) 
+        {
+            if (CurrentChar() == '.') dotCount++;
+
+            MoveNextChar();
+        }
+
+        int endOfNumber = _current;
+        AddToken(TokenType.NUMBER, double.Parse(_sourceCode[startOfNumber..endOfNumber]));
+    }
+
     private void ReadString()
     {
-        int startOfString = _current;
+        int startOfString = _current + 1; // to skip the first quote
 
         while (CurrentChar() != '"' && ! IsAtEnd()) 
         {
