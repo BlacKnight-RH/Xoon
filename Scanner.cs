@@ -71,11 +71,25 @@ internal class Scanner
             default:
                 if (Char.IsDigit(currentChar))
                     ReadNumber();
+                else if (Char.IsLetter(currentChar) || currentChar == '_')
+                    ReadIdentifier();
                 else    
                     Program.Error(_line, currentChar ,"Unexpected character.");
                 break;
         };
 
+    }
+
+    private void ReadIdentifier()
+    {
+        var startIndex = _current;
+        while (Char.IsLetterOrDigit(CurrentChar()) || CurrentChar() == '_') MoveNextChar();
+        
+        int endIndex = _current;
+        TokenType? tokenType = ReservedIdentifiers.GetIdentifier(_sourceCode[startIndex..endIndex]);
+        if (tokenType is null) tokenType = TokenType.IDENTIFIER;
+
+        AddToken(tokenType.Value);
     }
 
     private void ReadNumber()
